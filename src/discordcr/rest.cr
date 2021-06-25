@@ -1117,7 +1117,7 @@ module Discord
     # are fetched.
     def page_guild_members(guild_id : UInt64 | Snowflake, start_id : UInt64 | Snowflake = 0_u64, limit : Int32? = 1000, page_size : Int32 = 1000)
       Paginator(GuildMember).new(limit, Paginator::Direction::Down) do |last_page|
-        next_id = last_page.try &.last.user.id || start_id
+        next_id = last_page.try &.last.user.not_nil!.id || start_id
         list_guild_members(guild_id, page_size, next_id)
       end
     end

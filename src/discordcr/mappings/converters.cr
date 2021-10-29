@@ -55,7 +55,7 @@ module Discord
       macro inherited
         {% verbatim do %}
           # Create a new instance of {{ @type }} from {{ @type.ancestors[0].id }}.
-          # If {{ @type }} adds fields that can't be nil, it is are required to provide them as arguments
+          # If {{ @type }} adds fields that can't be nil, it is required to provide them as aditional arguments
           def initialize(abst : {{ @type.ancestors[0].id }}, **args : **T) forall T
             {% verbatim do %}
               {% for field in @type.instance_vars %}

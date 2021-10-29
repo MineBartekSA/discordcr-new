@@ -4,11 +4,15 @@ module Discord
     include AbstractCast
 
     property id : Snowflake
+    @[JSON::Filed(converter: ENum::ValueConverter(Discord::ApplicationCommandType))]
+    property type : ApplicationCommandType?
     property application_id : Snowflake
+    property guild_id : Snowflake?
     property name : String
     property description : String
     property options : Array(ApplicationCommandOption)?
     property default_permission : Bool?
+    property version : Snowflake
   end
 
   struct ApplicationCommand < ApplicationCommandAbstract
@@ -27,6 +31,12 @@ module Discord
     end
   end
 
+  enum ApplicationCommandType
+    CHAT_INPUT = 1
+    USER       = 2
+    MESSAGE    = 3
+  end
+
   struct ApplicationCommandOption
     include JSON::Serializable
 
@@ -36,7 +46,9 @@ module Discord
     property description : String
     property required : Bool?
     property choices : Array(ApplicationCommandOptionChoice)?
+    property autocomplete : Bool?
     property options : Array(ApplicationCommandOption)?
+    property channel_types : Array(ChannelType)?
 
     def initialize(@name, @type, @description, @required = nil, @choices = nil, @options = nil)
     end
@@ -52,13 +64,14 @@ module Discord
     Channel         = 7
     Role            = 8
     Mentionable     = 9
+    Number          = 10
   end
 
   struct ApplicationCommandOptionChoice
     include JSON::Serializable
 
     property name : String
-    property value : String | Int32
+    property value : String | Int64 | Float64
 
     def initialize(@name, @value)
     end

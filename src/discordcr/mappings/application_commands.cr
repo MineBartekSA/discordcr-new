@@ -4,7 +4,7 @@ module Discord
     include AbstractCast
 
     property id : Snowflake
-    @[JSON::Filed(converter: ENum::ValueConverter(Discord::ApplicationCommandType))]
+    @[JSON::Field(converter: Enum::ValueConverter(Discord::ApplicationCommandType))]
     property type : ApplicationCommandType?
     property application_id : Snowflake
     property guild_id : Snowflake?

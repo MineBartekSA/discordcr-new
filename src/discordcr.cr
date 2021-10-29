@@ -5,6 +5,7 @@ require "openssl/ssl/context"
 require "time/format"
 require "json"
 require "uri"
+require "./discordcr/mappings/converters"
 require "./discordcr/mappings/*"
 require "./discordcr/*"
 

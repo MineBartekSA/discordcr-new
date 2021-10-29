@@ -23,7 +23,6 @@ module Discord
 
     property id : String
     property name : String
-    property vip : Bool
     property optimal : Bool
     property deprecated : Bool
     property custom : Bool

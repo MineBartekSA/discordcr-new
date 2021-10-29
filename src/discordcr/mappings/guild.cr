@@ -170,7 +170,7 @@ module Discord
 
     property id : Snowflake
     property name : String
-    property instant_invite : String
+    property instant_invite : String?
     property channels : Array(WidgetChannel)
     property members : Array(WidgetMember)
     property presence_count : UInt32

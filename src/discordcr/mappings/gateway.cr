@@ -1,7 +1,7 @@
 require "./user"
 require "./channel"
 require "./guild"
-require "./slash_commands"
+require "./application_commands"
 require "./stage_instance"
 
 module Discord

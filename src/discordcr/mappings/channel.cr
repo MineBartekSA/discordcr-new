@@ -29,6 +29,10 @@ module Discord
     property video_quality_mode : VideoQualityMode?
     property message_count : UInt32?
     property member_count : UInt32?
+    property thread_metadata : ThreadMetadata?
+    property member : ThreadMember?
+    property default_auto_archive_duration : Int32?
+    property permissions : Permissions?
 
     # Produces a string to mention this channel in a message
     def mention
@@ -224,6 +228,31 @@ module Discord
   enum OverwriteType
     Role   = 0
     Member = 1
+  end
+
+  struct ThreadMetadata
+    include JSON::Serializable
+
+    property archived : Bool
+    property auto_archive_duration : Int32
+    @[JSON::Field(converter: Discord::TimestampConverter)]
+    property archive_timestamp : Time
+    property locked : Bool
+    property invitable : Bool?
+  end
+
+  abstract struct ThreadMemberAbstract
+    include JSON::Serializable
+    include AbstractCast
+
+    property id : Snowflake?
+    property user_id : Snowflake?
+    @[JSON::Field(converter: Discord::TimestampConverter)]
+    property join_timestamp : Time
+    property flags : Int32
+  end
+
+  struct ThreadMember < ThreadMemberAbstract
   end
 
   # There is an additional limit for the "embed" as a whole, of 6000 characters

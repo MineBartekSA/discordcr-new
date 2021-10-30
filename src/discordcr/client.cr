@@ -480,6 +480,48 @@ module Discord
         @cache.try &.remove_guild_channel(guild_id, payload.id) if guild_id
 
         call_event channel_delete, payload
+      when "THREAD_CREATE"
+        payload = Channel.from_json(data)
+
+        cache payload
+        guild_id = payload.guild_id
+        recipients = payload.recipients
+        if guild_id
+          @cache.try &.add_guild_channel(guild_id, payload.id)
+        elsif payload.type.dm? && recipients
+          @cache.try &.cache_dm_channel(payload.id, recipients[0].id)
+        end
+
+        call_event thread_create, payload
+      when "THREAD_UPDATE"
+        payload = Channel.from_json(data)
+
+        cache payload
+
+        call_event thread_update, payload
+      when "THREAD_DELETE"
+        payload = Channel.from_json(data)
+
+        @cache.try &.delete_channel(payload.id)
+        guild_id = payload.guild_id
+        @cache.try &.remove_guild_channel(guild_id, payload.id) if guild_id
+
+        call_event thread_delete, payload
+      when "THREAD_LIST_SYNC"
+        payload = Gateway::ThreadListSyncPayload.from_json(data)
+
+        payload.threads.each do |channel|
+          cache payload
+          @cache.try &.add_guild_channel(payload.guild_id, payload.id)
+        end
+
+        call_event thread_list_sync, payload
+      when "THREAD_MEMBER_UPDATE"
+        payload = ThreadMember.from_json(data)
+        call_event thread_member_update, payload
+      when "THREAD_MEMBERS_UPDATE"
+        payload = Gateway::ThreadMembersUpdatePayload.from_json(data)
+        call_event thread_members_update, payload
       when "CHANNEL_PINS_UPDATE"
         payload = Gateway::ChannelPinsUpdatePayload.from_json(data)
         call_event channel_pins_update, payload
@@ -787,6 +829,43 @@ module Discord
     #
     # [API docs for this event](https://discord.com/developers/docs/topics/gateway#channel-delete)
     event channel_delete, Channel
+
+    # Sent when a thread is created, relevant to the current user,
+    # or when the current user is added to a thread.
+    #
+    # [API docs for this event](https://discord.com/developers/docs/topics/gateway#thread-create)
+    event thread_create, Channel
+
+    # Sent when a thread is updated. This is not sent when the field last_message_id is altered.
+    # To keep track of the last_message_id changes, you must listen for Message Create events.
+    #
+    # [API docs for this event](https://discord.com/developers/docs/topics/gateway#thread-update)
+    event thread_update, Channel
+
+    # Sent when a thread relevant to the current user is deleted.
+    #
+    # [API docs for this event](https://discord.com/developers/docs/topics/gateway#thread-delete)
+    event thread_delete, Channel
+
+    # Sent when the current user gains access to a channel.
+    #
+    # [API docs for this event](https://discord.com/developers/docs/topics/gateway#thread-list-sync)
+    event thread_list_sync, Gateway::ThreadListSyncPayload
+
+    # Sent when the thread member object for the current user is updated.
+    # is event is documented for completeness, but unlikely to be used by most bots.
+    # For bots, this event largely is just a signal that you are a member of the thread.
+    # See the threads docs for more details.
+    #
+    # [API docs for this event](https://discord.com/developers/docs/topics/gateway#thread-member-update)
+    event thread_member_update, ThreadMember
+
+    # Sent when anyone is added to or removed from a thread.
+    # If the current user does not have the GUILD_MEMBERS Gateway Intent,
+    # then this event will only be sent if the current user was added to or removed from the thread.
+    #
+    # [API docs for this event](https://discord.com/developers/docs/topics/gateway#thread-members-update)
+    event thread_members_update, Gateway::ThreadMembersUpdatePayload
 
     # Called when a channel's pinned messages are updated, where a pin was
     # either added or removed.

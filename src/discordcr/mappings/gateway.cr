@@ -215,6 +215,30 @@ module Discord
       property _trace : Array(String)
     end
 
+    struct ThreadListSyncPayload
+      include JSON::Serializable
+
+      property guild_id : Snowflake
+      property channel_ids : Array(Snowflake)?
+      property threads : Array(Channel)
+      property members : Array(ThreadMember)
+    end
+
+    struct GatewayThreadMember < ThreadMemberAbstract
+      property member : GuildMember
+      property presence : Presence?
+    end
+
+    struct ThreadMembersUpdatePayload
+      include JSON::Serializable
+
+      property id : Snowflake
+      property guild_id : Snowflake
+      property member_count : Int32
+      property added_members : Array(GatewayThreadMember)?
+      property removed_member_ids : Array(Snowflake)?
+    end
+
     struct ChannelPinsUpdatePayload
       include JSON::Serializable
 

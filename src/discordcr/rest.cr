@@ -459,7 +459,7 @@ module Discord
         :channels_cid_messages_mid_reactions_emoji_me,
         channel_id,
         "PUT",
-        "/channels/#{channel_id}/messages/#{message_id}/reactions/#{URI.encode(emoji)}/@me",
+        "/channels/#{channel_id}/messages/#{message_id}/reactions/#{URI.encode_path_segment(emoji)}/@me",
         HTTP::Headers.new,
         nil
       )
@@ -475,7 +475,7 @@ module Discord
         :channels_cid_messages_mid_reactions_emoji_me,
         channel_id,
         "DELETE",
-        "/channels/#{channel_id}/messages/#{message_id}/reactions/#{URI.encode(emoji)}/@me",
+        "/channels/#{channel_id}/messages/#{message_id}/reactions/#{URI.encode_path_segment(emoji)}/@me",
         HTTP::Headers.new,
         nil
       )
@@ -492,7 +492,7 @@ module Discord
         :channels_cid_messages_mid_reactions_emoji_uid,
         channel_id,
         "DELETE",
-        "/channels/#{channel_id}/messages/#{message_id}/reactions/#{URI.encode(emoji)}/#{user_id}",
+        "/channels/#{channel_id}/messages/#{message_id}/reactions/#{URI.encode_path_segment(emoji)}/#{user_id}",
         HTTP::Headers.new,
         nil
       )
@@ -508,7 +508,7 @@ module Discord
         :channels_cid_messages_mid_reactions_emoji_me,
         channel_id,
         "GET",
-        "/channels/#{channel_id}/messages/#{message_id}/reactions/#{URI.encode(emoji)}?#{query}",
+        "/channels/#{channel_id}/messages/#{message_id}/reactions/#{URI.encode_path_segment(emoji)}?#{query}",
         HTTP::Headers.new,
         nil
       )
@@ -540,7 +540,7 @@ module Discord
         :channels_cid_messages_mid_reactions_emoji,
         channel_id,
         "DELETE",
-        "/channels/#{channel_id}/messages/#{message_id}/reactions/#{URI.encode(emoji)}",
+        "/channels/#{channel_id}/messages/#{message_id}/reactions/#{URI.encode_path_segment(emoji)}",
         HTTP::Headers.new,
         nil
       )
@@ -1130,7 +1130,7 @@ module Discord
         :guilds_gid_members_search,
         guild_id,
         "GET",
-        "/guilds/#{guild_id}/members/search?query=#{URI.encode(query)}&limit=#{limit}",
+        "/guilds/#{guild_id}/members/search?query=#{URI.encode_path_segment(query)}&limit=#{limit}",
         HTTP::Headers.new,
         nil
       )

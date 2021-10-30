@@ -511,8 +511,8 @@ module Discord
         payload = Gateway::ThreadListSyncPayload.from_json(data)
 
         payload.threads.each do |channel|
-          cache payload
-          @cache.try &.add_guild_channel(payload.guild_id, payload.id)
+          cache channel
+          @cache.try &.add_guild_channel(payload.guild_id, channel.id)
         end
 
         call_event thread_list_sync, payload

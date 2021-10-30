@@ -226,7 +226,7 @@ module Discord
 
     struct GatewayThreadMember < ThreadMemberAbstract
       property member : GuildMember
-      property presence : Presence?
+      property presence : PresenceUpdatePayload?
     end
 
     struct ThreadMembersUpdatePayload

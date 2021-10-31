@@ -202,43 +202,18 @@ module Discord
 
     # This one is special from simply Guild since it also has fields for members
     # and presences.
-    struct GuildCreatePayload
-      include JSON::Serializable
-
-      property id : Snowflake
-      property name : String
-      property icon : String?
-      property splash : String?
-      property owner_id : Snowflake
-      property region : String
-      property afk_channel_id : Snowflake?
-      property afk_timeout : Int32?
-      property verification_level : UInt8
-      property premium_tier : UInt8
-      property premium_subscription_count : UInt8?
-      property roles : Array(Role)
-      @[JSON::Field(key: "emojis")]
-      property emoji : Array(Emoji)
-      property features : Array(String)
+    struct GuildCreatePayload < GuildAbstract
+      @[JSON::Field(converter: Discord::TimestampConverter)]
+      property joined_at : Time
       property large : Bool
+      property unavailable : Bool
+      property member_count : UInt32
       property voice_states : Array(VoiceState)
-      property unavailable : Bool?
-      property member_count : Int32
       property members : Array(GuildMember)
       property channels : Array(Channel)
-      property presences : Array(Presence)
-      property widget_channel_id : Snowflake?
-      property default_message_notifications : UInt8
-      property explicit_content_filter : UInt8
-      property system_channel_id : Snowflake?
-      property stage_instances : Array(StageInstance)
       property threads : Array(Channel)
-
-      {% unless flag?(:correct_english) %}
-        def emojis
-          emoji
-        end
-      {% end %}
+      property presences : Array(Presence)
+      property stage_instances : Array(StageInstance)
     end
 
     struct GuildDeletePayload

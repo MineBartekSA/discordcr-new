@@ -2,8 +2,9 @@ require "./converters"
 require "./voice"
 
 module Discord
-  struct Guild
+  abstract struct GuildAbstract
     include JSON::Serializable
+    include AbstractCast
 
     property id : Snowflake
     property name : String
@@ -29,27 +30,6 @@ module Discord
     property explicit_content_filter : UInt8
     property system_channel_id : Snowflake?
 
-    # :nodoc:
-    def initialize(payload : Gateway::GuildCreatePayload)
-      @id = payload.id
-      @name = payload.name
-      @icon = payload.icon
-      @splash = payload.splash
-      @owner_id = payload.owner_id
-      @region = payload.region
-      @afk_channel_id = payload.afk_channel_id
-      @afk_timeout = payload.afk_timeout
-      @verification_level = payload.verification_level
-      @premium_tier = payload.premium_tier
-      @roles = payload.roles
-      @emoji = payload.emoji
-      @features = payload.features
-      @widget_channel_id = payload.widget_channel_id
-      @default_message_notifications = payload.default_message_notifications
-      @explicit_content_filter = payload.explicit_content_filter
-      @system_channel_id = payload.system_channel_id
-    end
-
     {% unless flag?(:correct_english) %}
       def emojis
         emoji
@@ -73,6 +53,9 @@ module Discord
         CDN.guild_splash(id, splash, format, size)
       end
     end
+  end
+
+  struct Guild < GuildAbstract
   end
 
   struct UnavailableGuild

@@ -48,4 +48,33 @@ module Discord
       builder.scalar(value.milliseconds)
     end
   end
+
+  # :nodoc:
+  module AbstractCast
+    macro included
+      {% unless @type.abstract? %}
+        {{ raise "AbstractCast can only be included in an abstract structure" }}
+      {% end %}
+      macro inherited
+        {% verbatim do %}
+          # Create a new instance of {{ @type }} from {{ @type.ancestors[0].id }}.
+          # If {{ @type }} adds fields that can't be nil, it is required to provide them as aditional arguments
+          def initialize(abst : {{ @type.ancestors[0].id }}, **args : **T) forall T
+            {% verbatim do %}
+              {% for field in @type.instance_vars %}
+                {% if @type.ancestors[0].instance_vars.map(&.id).includes? field.id %}
+                  @{{ field.name }} = abst.{{ field.name }}
+                {% else %}
+                  {% unless T.keys.includes? field.name.symbolize || field.has_default_value? %}
+                    {{ raise "no argument '#{field.name}'" }}
+                  {% end %}
+                  @{{ field.name }} = args[{{ field.name.symbolize }}]
+                {% end %}
+              {% end %}
+            {% end %}
+          end
+        {% end %}
+      end
+    end
+  end
 end

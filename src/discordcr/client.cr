@@ -400,9 +400,13 @@ module Discord
       @on_{{name}}_handlers.try &.each do |handler|
         begin
           handler.call({{payload}})
+        rescue err : CodeException
+          Log.error(exception: err) { "[#{@client_name}] An exception occurred in a user-defined event handler!" }
+          if (he = err.human_errors) != ""
+            Log.error { "[#{@client_name}] Received error information from Discord#{he}" }
+          end
         rescue ex
           Log.error(exception: ex) { "[#{@client_name}] An exception occurred in a user-defined event handler!" }
-          Log.error { ex.inspect_with_backtrace }
         end
       end
     end

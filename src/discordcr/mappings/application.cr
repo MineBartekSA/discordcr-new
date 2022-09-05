@@ -49,6 +49,8 @@ module Discord
     GatewayGuildMembersLimited    = 1 << 15
     VerificationPendingGuildLimit = 1 << 16
     Embedded                      = 1 << 17
-    UnknownFlag                   = 1 << 18 # WTH IS THIS
+    GatewayMessageContent         = 1 << 18
+    GatewayMessageContentLimited  = 1 << 19
+    ApplicationCommandBadge       = 1 << 20
   end
 end

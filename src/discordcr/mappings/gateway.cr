@@ -70,6 +70,7 @@ module Discord
       DirectMessages         = 1 << 12
       DirectMessageReactions = 1 << 13
       DirectMessageTyping    = 1 << 14
+      MessageContent         = 1 << 15
     end
 
     struct ResumePacket

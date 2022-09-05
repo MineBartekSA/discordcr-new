@@ -48,7 +48,8 @@ module Discord
                       Gateway::Intents::GuildMessages |
                       Gateway::Intents::GuildMessageReactions |
                       Gateway::Intents::DirectMessages |
-                      Gateway::Intents::DirectMessageReactions
+                      Gateway::Intents::DirectMessageReactions |
+                      Gateway::Intents::MessageContent
 
     # Available gateway compression modes that can be requested
     enum CompressMode

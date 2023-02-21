@@ -73,7 +73,8 @@ module Discord
     VerifiedBot               = 1 << 16
     EarlyVerifiedBotDeveloper = 1 << 17
     DiscordCertifiedModerator = 1 << 18
-    UnknownUserFlag           = 1 << 19
+    BotHTTPInteractions       = 1 << 19
+    ActiveDeveloper           = 1 << 22
   end
 
   enum PremiumType

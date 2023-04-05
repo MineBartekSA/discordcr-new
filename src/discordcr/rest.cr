@@ -390,7 +390,7 @@ module Discord
       )
 
       content_type = "application/json"
-      body, content_type = send_file(body, file, filename) if file
+      body, content_type = send_file(body, [{filename, file}]) if file
 
       response = request(
         :channels_cid_messages,
@@ -405,12 +405,14 @@ module Discord
     end
 
     # :nodoc:
-    private def send_file(old_body : String, file : String | IO | Nil, filename : String?) : {IO::Memory, String}
-      file = File.open(file) if file.is_a?(String)
-      filename = (file.is_a?(File) ? File.basename(file.path) : "") unless filename
+    private def send_file(old_body : String, files : Array({String?, String | IO | Nil})) : {IO::Memory, String}
       builder = HTTP::FormData::Builder.new((io = IO::Memory.new))
       builder.field("payload_json", old_body, HTTP::Headers{"Content-Type" => "application/json"})
-      builder.file("file", file, HTTP::FormData::FileMetadata.new(filename: filename))
+      files.each_with_index do |filename, file, i|
+        file = File.open(file) if file.is_a?(String)
+        filename = (file.is_a?(File) ? File.basename(file.path) : "") unless filename
+        builder.file("files[#{i}]", file, HTTP::FormData::FileMetadata.new(filename: filename))
+      end
       builder.finish
       {io, builder.content_type}
     end
@@ -552,7 +554,7 @@ module Discord
     # [API docs for this method](https://discord.com/developers/docs/resources/channel#edit-message)
     def edit_message(channel_id : UInt64 | Snowflake, message_id : UInt64 | Snowflake, content : String? = nil, embeds : Array(Embed)? = nil,
                      file : String | IO | Nil = nil, filename : String? = nil, flags : UInt8 | MessageFlags | Nil = nil,
-                     allowed_mentions : AllowedMentions? = nil, components : Array(Component)? = nil)
+                     allowed_mentions : AllowedMentions? = nil, components : Array(Component)? = nil, files : Array({String?, String | IO | Nil})? = nil)
       body = encode_tuple(
         content: content,
         embeds: embeds,
@@ -562,7 +564,11 @@ module Discord
       )
 
       content_type = "application/json"
-      body, content_type = send_file(body, file, filename) if file
+      if file
+        files = [] of {String?, String | IO | Nil} if files.nil?
+        files << {filename, file}
+        body, content_type = send_file(body, files)
+      end
 
       response = request(
         :channels_cid_messages_mid,
@@ -2338,7 +2344,7 @@ module Discord
       )
 
       content_type = "application/json"
-      body, content_type = send_file(body, file, filename) if file
+      body, content_type = send_file(body, [{filename, file}]) if file
 
       response = request(
         :webhooks_wid,
@@ -2384,7 +2390,7 @@ module Discord
       )
 
       content_type = "application/json"
-      body, content_type = send_file(body, file, filename) if file
+      body, content_type = send_file(body, [{filename, file}]) if file
 
       response = request(
         :webhooks_wid_t_messages_mid,
@@ -2683,7 +2689,7 @@ module Discord
       )
 
       content_type = "application/json"
-      body, content_type = send_file(body, file, filename) if file
+      body, content_type = send_file(body, [{filename, file}]) if file
 
       response = request(
         :webhooks_aid_t_messages_original,

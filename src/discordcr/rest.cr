@@ -408,7 +408,8 @@ module Discord
     private def send_file(old_body : String, files : Array({String?, String | IO | Nil})) : {IO::Memory, String}
       builder = HTTP::FormData::Builder.new((io = IO::Memory.new))
       builder.field("payload_json", old_body, HTTP::Headers{"Content-Type" => "application/json"})
-      files.each_with_index do |filename, file, i|
+      files.each_with_index do |(filename, file), i|
+        next if file.nil?
         file = File.open(file) if file.is_a?(String)
         filename = (file.is_a?(File) ? File.basename(file.path) : "") unless filename
         builder.file("files[#{i}]", file, HTTP::FormData::FileMetadata.new(filename: filename))
@@ -567,8 +568,8 @@ module Discord
       if file
         files = [] of {String?, String | IO | Nil} if files.nil?
         files << {filename, file}
-        body, content_type = send_file(body, files)
       end
+      body, content_type = send_file(body, files) if !files.nil?
 
       response = request(
         :channels_cid_messages_mid,

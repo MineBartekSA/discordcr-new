@@ -316,7 +316,7 @@ module Discord
       property roles : Array(Snowflake)
       property user : User
       property nick : String?
-      @[JSON::Field(converter: Discord::MaybeTimestampConverter)]
+      @[JSON::Field(converter: Discord::TimestampConverter)]
       property joined_at : Time
       @[JSON::Field(converter: Discord::MaybeTimestampConverter)]
       property premium_since : Time?

@@ -2333,7 +2333,7 @@ module Discord
                         embeds : Array(Embed)? = nil, file : String | IO | Nil = nil,
                         filename : String? = nil, tts : Bool? = nil, avatar_url : String? = nil,
                         username : String? = nil, allowed_mentions : AllowedMentions? = nil,
-                        components : Array(Component)? = nil, wait : Bool? = false)
+                        components : Array(Component)? = nil, wait : Bool? = false, thread_id : UInt64 | Snowflake? = nil)
       body = encode_tuple(
         content: content,
         username: username,
@@ -2344,6 +2344,11 @@ module Discord
         components: components,
       )
 
+      params = URI::Params.build do |form|
+        form.add "wait", wait.to_s if wait
+        form.add "thread_id", thread_id.to_s if thread_id
+      end
+
       content_type = "application/json"
       body, content_type = send_file(body, [{filename, file}]) if file
 
@@ -2351,7 +2356,7 @@ module Discord
         :webhooks_wid,
         webhook_id,
         "POST",
-        "/webhooks/#{webhook_id}/#{token}#{wait ? "?wait=#{wait}" : ""}",
+        "/webhooks/#{webhook_id}/#{token}?#{params}",
         HTTP::Headers{"Content-Type" => content_type},
         body
       )
